@@ -1,0 +1,9 @@
+{
+  "name": "KOReader",
+  "command": "/mnt/us/koreader/koreader.sh",
+  "workdir": "/mnt/us",
+  "vendor": "KOReader Team",
+  "title": "KOReader Launcher",
+  "timeout_msg": "If you see this screen > 10s: press [BACK] to exit.",
+  "exit_msg": "On KOReader exit: press [BACK] twice if frozen."
+}
