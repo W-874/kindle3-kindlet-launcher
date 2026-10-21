@@ -1,0 +1,19 @@
+# Local investigation material and device logs
+/docs/
+*.log
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Build outputs and downloaded toolchains
+/build/
+/dist/
+*.azw2
+*.class
+
+# Required upstream template and precompiled runtime resource
+!/template/base.azw2
+!/template/AutoExit.class
