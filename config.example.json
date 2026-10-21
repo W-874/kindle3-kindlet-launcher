@@ -4,6 +4,6 @@
   "workdir": "/mnt/us",
   "vendor": "KOReader Team",
   "title": "KOReader Launcher",
-  "timeout_msg": "If you see this screen > 10s: press [BACK] to exit.",
-  "exit_msg": "On KOReader exit: press [BACK] twice if frozen."
+  "timeout_msg": "Closing launcher before starting the application.",
+  "exit_msg": "The application should return to the Kindle Home screen on exit."
 }
