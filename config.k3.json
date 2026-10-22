@@ -2,9 +2,9 @@
   "name": "KOReader",
   "command": "{ printf '\\nlaunch pid=%s\\n' \"$$\"; /mnt/us/koreader/koreader.sh --kual; rc=$?; printf 'exit=%s\\n' \"$rc\"; exit \"$rc\"; } </dev/null >>/mnt/us/koreader-k3-launcher.log 2>&1",
   "workdir": "/mnt/us",
-  "vendor": "Kindle3 Kindlet Launcher",
+  "vendor": "Kindle 3 / Kindle 4 Kindlet Launcher",
   "title": "KOReader",
   "timeout_msg": "Closing launcher before starting KOReader.",
-  "exit_msg": "If this screen stays visible, stop testing and collect logs.",
+  "exit_msg": "If this screen stays visible, check the launcher log.",
   "output": "dist/KOReader.azw2"
 }

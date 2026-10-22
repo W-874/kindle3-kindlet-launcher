@@ -1,8 +1,8 @@
 {
   "name": "KOReader",
-  "command": "/mnt/us/koreader/koreader.sh",
+  "command": "/mnt/us/koreader/koreader.sh --kual",
   "workdir": "/mnt/us",
-  "vendor": "KOReader Team",
+  "vendor": "Custom",
   "title": "KOReader Launcher",
   "timeout_msg": "Closing launcher before starting the application.",
   "exit_msg": "The application should return to the Kindle Home screen on exit."
