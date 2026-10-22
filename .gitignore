@@ -1,5 +1,6 @@
 # Local investigation material and device logs
 /docs/
+.codex-agent-mailbox/
 *.log
 
 # Python environments and caches
