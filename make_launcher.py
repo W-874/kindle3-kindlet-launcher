@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-Standalone Kindlet launcher builder for Kindle 3 and other KDK 1.0 devices.
-Creates a signed, native .azw2 Kindle document for any shell script, app, or command.
+Host-side builder for signed .azw2 launchers, tested with KOReader on Kindle 3/4.
+Uses the KDK 1.0 template; compatibility with other devices/apps needs verification.
+Commands run through the template's normal onStop handoff after a focus-driven exit.
+Python and signing dependencies run on the build computer, not on the Kindle.
 """
 
 import os
@@ -177,6 +179,9 @@ def patch_kindlet_class(data, cmd, work_dir, title_msg, timeout_msg, exit_msg):
     Patch the KUAL template so longStart shows a status screen, stores the command in
     commandToRunOnExit/dirToChangeToOnExit and asks the framework to close the Kindlet.
     The template's own onStop launches the command during the framework's stop transition.
+    The replacement longStart skips KUAL menu initialization/parsing. Preserve the
+    template's lifecycle timing: its onStop sleeps 175 ms after dispatching the command;
+    onDestroy also sleeps 175 ms. These are not AutoExit readiness timers.
     Raises ValueError for anything other than the unpatched KUAL template.
     """
     try:
@@ -544,30 +549,33 @@ def upload_to_kindle(local_path, kindle_ip, password, port=22):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Build a signed .azw2 launcher for Kindle 3 and other KDK 1.0 devices",
+        description="Build a signed .azw2 launcher for Kindle 3 / Kindle 4 (KDK 1.0)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # KOReader Launcher
-  python make_launcher.py --name "KOReader" --cmd "/mnt/us/koreader/koreader.sh"
+  # Shared Kindle 3 / Kindle 4 release configuration (historical filename)
+  python make_launcher.py --config config.k3.json
+
+  # Minimal KOReader launcher without the release configuration's log wrapper
+  python make_launcher.py --name "KOReader" --cmd "/mnt/us/koreader/koreader.sh --kual"
 
   # USBNetwork Switcher
   python make_launcher.py --name "Toggle USBNet" --cmd "/mnt/us/extensions/usbnet/bin/usbnet.sh toggle_usbnet"
 
   # Deploy to Kindle over Wi-Fi
-  python make_launcher.py --name "KOReader" --cmd "/mnt/us/koreader/koreader.sh" --upload 192.168.1.23 --ssh-pass "YOUR_ROOT_PASS"
+  python make_launcher.py --config config.k3.json --upload 192.168.1.23
 """
     )
     parser.add_argument("-n", "--name", help="App name displayed in Kindle Home / Library")
-    parser.add_argument("-c", "--cmd", help="Linux shell command or script path to execute")
+    parser.add_argument("-c", "--cmd", help="Shell command or script path dispatched when the Kindlet stops")
     parser.add_argument("-d", "--dir", default=None, help="Working directory (default: /mnt/us)")
     parser.add_argument("-v", "--vendor", default=None, help="Implementation vendor string (default: Custom)")
     parser.add_argument("--title", help="Header text shown on launcher screen")
-    parser.add_argument("--timeout-msg", help="Startup / timeout instruction note")
-    parser.add_argument("--exit-msg", help="Exit return instruction note")
+    parser.add_argument("--timeout-msg", help="Startup note text only; does not set a timeout or delay")
+    parser.add_argument("--exit-msg", help="Second note shown on the launcher screen")
     parser.add_argument("--cover", help="Path to custom cover image (.jpg)")
     parser.add_argument("-o", "--output", help="Output .azw2 file path")
-    parser.add_argument("--config", help="Path to JSON configuration file")
+    parser.add_argument("--config", help="JSON configuration; explicit command-line values take precedence")
     parser.add_argument("--upload", help="Kindle IP address to automatically upload via SSH")
     parser.add_argument("--ssh-pass", default=None, help="Kindle SSH root password (generate at https://www.sven.de/kindle/)")
 

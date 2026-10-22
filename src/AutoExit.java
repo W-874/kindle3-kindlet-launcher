@@ -11,7 +11,11 @@ import java.awt.event.FocusListener;
 import com.amazon.kindle.kindlet.KindletContext;
 import com.mobileread.ixtab.kindlelauncher.ui.UIAdapter;
 
-/** Requests normal KUAL exit only after the launcher owns keyboard focus. */
+/**
+ * Kindle 3/4 launcher handoff: request normal KUAL exit once visible and focused.
+ * The template's onStop dispatches the saved command; this helper does not launch it.
+ * Actual UI events drive readiness, without a timer or polling thread.
+ */
 public final class AutoExit extends ComponentAdapter implements FocusListener, Runnable {
     private final Container root;
     private final Component target;
@@ -51,6 +55,7 @@ public final class AutoExit extends ComponentAdapter implements FocusListener, R
 
     private void requestFocus() {
         if (cancelled) return;
+        // arm() can precede display; componentShown gives focus another opportunity.
         root.validate();
         root.repaint();
         target.requestFocus();
@@ -72,11 +77,13 @@ public final class AutoExit extends ComponentAdapter implements FocusListener, R
     private void schedule() {
         if (cancelled || queued) return;
         queued = true;
+        // Leave the current focus callback before asking the framework to exit.
         EventQueue.invokeLater(this);
     }
 
     public void run() {
         queued = false;
+        // Visibility/focus can change while this callback is waiting on the EDT.
         if (cancelled || !target.isShowing() || !target.hasFocus()) return;
         detach();
         UIAdapter.INSTANCE.suicide(context);

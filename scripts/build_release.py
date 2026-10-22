@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Recompile the device-tested Java 1.4 helper, then build and verify a release.
+"""Recompile the device-tested Java 1.4 helper and verify the shared Kindle 3/4 release.
 
-Requires Java 17 (java and jarsigner) and the Python dependencies in requirements.txt.
+Release CI uses Java 17 (java and jarsigner) and requirements.txt dependencies.
 The ordinary make_launcher.py CLI does not need Java or these compiler downloads.
+config.k3.json is the shared release configuration; its filename is historical.
 """
 
 import hashlib
